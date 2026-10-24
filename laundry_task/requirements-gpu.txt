@@ -4,3 +4,5 @@ mujoco-warp==3.17.0
 warp-lang==1.17.0
 numpy==2.4.6
 scipy==1.17.1
+pillow==13.0.0
+PyOpenGL==3.1.10

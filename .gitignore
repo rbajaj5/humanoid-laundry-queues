@@ -19,3 +19,8 @@ laundry_task/output/preview.jpg
 laundry_task/output/*.mp4
 laundry_task/output/*.wav
 laundry_task/output/frames/
+laundry_task/output/task_preview_*.jpg
+!laundry_task/output/task_preview_0680.jpg
+laundry_task/output/encoded_*.jpg
+laundry_task/output/encoded_*.png
+.venv-gpu/

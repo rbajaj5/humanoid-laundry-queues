@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "tests_run": 32,
+  "test_output": "test_independent_exposes_skew (test_model.MechanismTests.test_independent_exposes_skew) ... ok\ntest_no_delay_equivalence (test_model.MechanismTests.test_no_delay_equivalence) ... ok\ntest_obsolete_packets_do_not_reverse_time (test_model.MechanismTests.test_obsolete_packets_do_not_reverse_time) ... ok\ntest_waits_for_all_groups (test_model.MechanismTests.test_waits_for_all_groups) ... ok\ntest_matched_inputs_and_repeatable_noise (test_model.PhysicsTests.test_matched_inputs_and_repeatable_noise) ... ok\ntest_model_hashes (test_model.PhysicsTests.test_model_hashes) ... ok\ntest_nominal_path_within_joint_limits (test_model.PhysicsTests.test_nominal_path_within_joint_limits) ... ok\ntest_real_mass_inertia_and_free_base (test_model.PhysicsTests.test_real_mass_inertia_and_free_base) ... ok\ntest_retained_replay (test_model.PhysicsTests.test_retained_replay) ... ok\ntest_saved_pairing_and_aggregates (test_model.PhysicsTests.test_saved_pairing_and_aggregates) ... ok\ntest_active_skill_blocks_conflicting_command (laundry_task.test_supervisor.ProtocolTests.test_active_skill_blocks_conflicting_command) ... ok\ntest_complete_ordered_task_without_any_receipts (laundry_task.test_supervisor.ProtocolTests.test_complete_ordered_task_without_any_receipts) ... ok\ntest_completion_evidence_must_follow_execution_start (laundry_task.test_supervisor.ProtocolTests.test_completion_evidence_must_follow_execution_start) ... ok\ntest_dequeue_checks_current_state (laundry_task.test_supervisor.ProtocolTests.test_dequeue_checks_current_state) ... ok\ntest_expiry_does_not_cancel_execution (laundry_task.test_supervisor.ProtocolTests.test_expiry_does_not_cancel_execution) ... ok\ntest_invalid_thresholds (laundry_task.test_supervisor.ProtocolTests.test_invalid_thresholds) ... ok\ntest_missing_receipt_retries_same_identity (laundry_task.test_supervisor.ProtocolTests.test_missing_receipt_retries_same_identity) ... ok\ntest_no_retransmission_before_timeout (laundry_task.test_supervisor.ProtocolTests.test_no_retransmission_before_timeout) ... ok\ntest_observation_order (laundry_task.test_supervisor.ProtocolTests.test_observation_order) ... ok\ntest_old_receipt_cannot_clear_next_command (laundry_task.test_supervisor.ProtocolTests.test_old_receipt_cannot_clear_next_command) ... ok\ntest_old_session_rejected (laundry_task.test_supervisor.ProtocolTests.test_old_session_rejected) ... ok\ntest_receipt_is_not_task_completion (laundry_task.test_supervisor.ProtocolTests.test_receipt_is_not_task_completion) ... ok\ntest_receiver_deduplicates (laundry_task.test_supervisor.ProtocolTests.test_receiver_deduplicates) ... ok\ntest_reject_old_future_and_nan_observations (laundry_task.test_supervisor.ProtocolTests.test_reject_old_future_and_nan_observations) ... ok\ntest_release_requires_cloth_inside (laundry_task.test_supervisor.ProtocolTests.test_release_requires_cloth_inside) ... ok\ntest_unreliable_body_holds (laundry_task.test_supervisor.ProtocolTests.test_unreliable_body_holds) ... ok\ntest_free_base_and_passive_lid (laundry_task.test_physical.PhysicalModelTests.test_free_base_and_passive_lid) ... ok\ntest_initial_task_is_not_precompleted (laundry_task.test_physical.PhysicalModelTests.test_initial_task_is_not_precompleted) ... ok\ntest_compute_and_source_provenance (laundry_task.test_physical.RetainedCudaTests.test_compute_and_source_provenance) ... ok\ntest_grasp_proximity_and_receipt_stress (laundry_task.test_physical.RetainedCudaTests.test_grasp_proximity_and_receipt_stress) ... ok\ntest_metrics_recomputed_from_every_retained_pose (laundry_task.test_physical.RetainedCudaTests.test_metrics_recomputed_from_every_retained_pose) ... ok\ntest_unique_execution_and_verified_completion (laundry_task.test_physical.RetainedCudaTests.test_unique_execution_and_verified_completion) ... ok\n\n----------------------------------------------------------------------\nRan 32 tests in 3.854s\n\nOK\n",
+  "movie": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 25,
+    "frames": 1650,
+    "duration_s": 66.0,
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "full_decode": "passed",
+    "audio_rms_pcm16": 3066.740731899314
+  },
+  "all_retained_stress_observations_in_movie": true,
+  "sha256": {
+    "laundry_task/output/humanoid_laundry_task_narrated.mp4": "e3c726d99e111dd5cd0293dae21ea34d116370b526d1f97bad24a8509e1e578e",
+    "laundry_task/output/laundry_cuda_delayed.json": "a6b345d89599f035db9e6ca4d479e8ff51c7395a12dd8575522f44e88ce045b6",
+    "laundry_task/output/laundry_cuda_delayed.npz": "1bb9d1b81074419187d81cc0b042ca3af5eee07e54dec04d8d7a0abe0f78b4a6",
+    "laundry_task/output/laundry_cuda_immediate.json": "65eab521eff69e34a5bb1bb1f6899de65d89a91b31462e2419003b1bec49e08d",
+    "laundry_task/output/laundry_cuda_immediate.npz": "041fe334cb342d89c591bc3515c2cf49106f2afa60a0b744da55183dc41fc00c",
+    "laundry_task/output/task_movie_frames.json": "f9a317eec91a93261d06985caa10509e195af899037772d66bef74225ec5027c",
+    "laundry_task/output/task_render_provenance.json": "5917529b6fbc2deb13e78c4fea74bd2577193933e3a8bfbf8a25a3c3e61a1766",
+    "laundry_task/output/task_audio_validation.json": "5d862e6fb76f51c8701f9777803cae2a8f41e9ddbb4ef8d89fb62893bbeed0f2"
+  },
+  "scope": "Two final CUDA episodes, one calibrated setup. No policy superiority claim."
+}

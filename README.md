@@ -1,89 +1,141 @@
 # Humanoid Laundry Queues
 
-A standalone simulation-only research repository for queue-aware humanoid task coordination. It does not modify or replace the separate Assured Autonomy or RAG repositories.
+**Open the washer. Load a washcloth. Verify completion despite missing receipts.**
+A standalone, simulation-only demonstration of queue-aware task coordination
+above an articulated humanoid controller. This repository is separate from the
+original [Assured Autonomy research](https://github.com/rbajaj5/delay-aware-runtime-assurance-lab)
+and [RAG](https://github.com/rbajaj5/assured-autonomy-rag).
 
-**Current direction:** condition on a capable low-level humanoid controller and study task coordination: opening, grasping, insertion, release and verified completion. Queue awareness belongs in pending skills, stale observations and missing acknowledgements; internal joint delay is no longer the main research target. [Research integration, public controller candidates and tested task protocol](laundry_task/README.md). Actual door/cloth interaction remains to be implemented. No new task-success movie is claimed.
+[![Watch the GPU-backed washer-opening and cloth-loading demonstration](laundry_task/output/task_preview_0680.jpg)](https://github.com/rbajaj5/humanoid-laundry-queues/releases/download/laundry-task-2026-10-24/humanoid_laundry_task_narrated.mp4)
 
-## Historical Standing and Reaching Demonstration
+**[Watch / download the new narrated MP4 (66 seconds, 1080p)](https://github.com/rbajaj5/humanoid-laundry-queues/releases/download/laundry-task-2026-10-24/humanoid_laundry_task_narrated.mp4)**
+Visible captions, a synchronized manipulation close-up, task state and message
+telemetry all come from the retained simulation. One demonstration, not a gallery
+of repeated clips. The play link opens the MP4; GitHub README playback varies by client.
 
-**An articulated rigid-body experiment, not a kinematic stick figure.** A free-base Unitree G1 reaches toward a fixed washing-machine proxy. Link masses, centers of mass, inertias, gravity, joint torque limits and foot contact are evaluated by MuJoCo. No force, weld, or script holds the pelvis in place during the experiment.
+## What Actually Moves
 
-[![Mass-bearing humanoid comparison](output/preview_0470.jpg)](https://github.com/rbajaj5/humanoid-laundry-queues/releases/download/humanoid-queues-2026-10-24/humanoid_joint_queue_narrated.mp4)
+- A **33.341 kg Unitree G1**, 29 actuators and a freely moving base, with the
+  pinned model's link masses, inertias, gravity, contact and actuator limits.
+- A **passive hinged washer lid**, opened by the right hand. No motor drives the
+  lid and no script sets its angle during integration.
+- A **55 g deformable washcloth**, picked up with the left hand, inserted,
+  released and retained inside the washer after hand retraction.
+- Joint targets come from hand-authored whole-body inverse kinematics plus
+  simple ankle feedback. The pelvis is not welded or externally stabilized.
 
-[48-second MP4 with local automated narration and visible captions](https://github.com/rbajaj5/humanoid-laundry-queues/releases/download/humanoid-queues-2026-10-24/humanoid_joint_queue_narrated.mp4)
+**Physics runs on the NVIDIA RTX 5070 Ti Laptop GPU using MuJoCo Warp**, at 2 ms
+steps. CPU code handles IK, protocol logic and kinematic readback. The movie is a
+replay of GPU-integrated states, not generative video. Graphics and encoding are
+separate: the recorded renderer is identified in
+[render provenance](laundry_task/output/task_render_provenance.json).
 
-## Question and Mechanism
+## Where Queue Awareness Matters
 
-Can independently delayed components of a whole-body command disturb a humanoid even when each joint's local position servo works? Does preserving command-version coherence reduce that disturbance?
+The useful distinction is between **issued, received, executing and physically
+completed**, not arbitrary delays inside every joint.
 
-An offline nominal path bends the knees, shifts the hips, pitches the waist and extends both arms. Inverse kinematics constrains foot position, foot pitch and the mass-weighted horizontal center of mass. This constructs nominal static poses; it is not a dynamic balance certificate. The root position used in IK is **not** applied to the simulated robot. Only its 29 joint setpoints are actuated.
+1. The opening receipt is withheld, while the physical action continues.
+2. Retries preserve the command ID. The receiver blocks duplicate execution.
+3. Observations have a 250 ms freshness limit; a 1.2 s observation blackout
+   causes stale/repeated observations to be rejected.
+4. Fresh physical postconditions authorize progression. A receipt alone never
+   establishes success, and a timeout never means that an action was canceled.
+5. The receiver checks current preconditions and finishes an active movement
+   before accepting a conflicting next skill. Release requires the cloth inside.
 
-Commands travel in four groups: legs, waist, left arm and right arm. Both comparison arms have the same issued targets, force disturbances, packet schedule, local PD actuators, 20 ms setpoint lag, physics and initial state.
+The experiment uses one robot, one washer session and an in-memory ledger. This
+is not distributed consensus or crash-safe exactly-once physical execution.
 
-- **Independent arrivals:** apply the newest received version separately for each group. Discard stale arrivals.
-- **Coherent bundles:** buffer received packets until a whole-body version is complete; apply the newest complete version atomically and discard obsolete versions. Keep the previous target until then. No future arrivals are consulted, in-flight packets are not magically canceled, and instantaneous joint motion is never imposed.
+## Measured Result
 
-This is a queue-coherence supervisor, not a proven RTA safety filter. It cannot rescue arbitrary unstable configurations. Synchronization also delays the faster groups.
+Both retained final runs use the same frozen body controller, model, starting
+state and skill sequence. They differ in observation/receipt scheduling, not in
+joint dynamics. No stochastic noise is injected, so there is no random seed.
 
-## Model and Protocol
+| CUDA episode | Completed skills | Finish time | Post-finish cloth retention | Duplicate attempts blocked |
+| --- | ---: | ---: | ---: | ---: |
+| Timely observation / receipt reference | 5 / 5 | 23.56 s | 3.00 s | 285 |
+| Delayed observations; opening receipt missing | 5 / 5 | 23.56 s | 3.00 s | 270 |
 
-- G1 model mass: **33.341142 kg**, 29 actuated joints plus a six-DOF floating base.
-- Per-link mass, local COM and principal inertia: [link_inertias.csv](output/link_inertias.csv).
-- Source: [MuJoCo Menagerie G1](https://github.com/google-deepmind/mujoco_menagerie/tree/f3b6013629c7b94f8ee93fd977b161fa8350f9bc/unitree_g1), pinned revision and file hashes in [model_manifest.json](output/model_manifest.json). BSD-3-Clause license is downloaded with the model; its meshes are not bundled in this repository.
-- Physics: 2 ms MuJoCo CPU steps, 20 ms command updates, 1 s settling, then 12 s per episode. Graphics are separate; [render_backend.json](output/render_backend.json) identifies the actual renderer. This is **not GPU physics or neural-policy training**.
-- Eight fixed seeds, four delay profiles, two arms: **64 episodes**, all retained in the results table. The movie shows the preselected seed 24100 in the 600 ms skew condition, not a selected worst case.
-- Profiles: zero; uniform 200 ms; and leg delays of 200 or 600 ms with waist delay one quarter as large. Skew profiles add 0/20/40 ms per-group jitter. Larger delays occur during reach (2-4 s) and return (7-9 s). Other times retain jitter. These are synthetic stress profiles, not measured robot latencies.
-- Falls: base height below 0.55 m or base tilt above 45 degrees at a 20 ms observation. Reach: at least 0.4 s total within 8 cm of the nominal right-hand endpoint during (4,7] s, and no fall over the episode. The metric is **not** a button press or washing-machine operation.
-- Full configuration: [config.json](config.json). Seed variability covers small commanded-angle noise, horizontal force disturbances and delay jitter, not broad environments or independently trained policies.
+The stress run also rejected 30 repeated/stale observation updates. Only five
+physical skills started. The duplicate count measures repeated message attempts,
+**not prevented accidents**. This deliberately simple protocol retries at each
+eligible control tick after its 0.5 s timeout, even after receipt but before
+physical verification; the blackout suppresses some retries. A backoff policy
+would reduce traffic. The reference still has 120 ms command transport delay.
 
-## Results
+Maximum body tilt was about **1.735 degrees** in both runs. The lid reached about
+70.25 degrees. Task success requires all 16 cloth vertices within the defined
+retention region for three seconds after the executor finishes retraction,
+with no active grasp and the hands clear. Checks are sampled at 40 ms; they are
+not a continuous-time safety proof.
 
-Mean peak base tilt in degrees (sample standard deviation in parentheses):
+**This is a calibrated feasibility demonstration, not evidence of superiority
+over a delay-blind controller or an estimate of robot reliability.** Both runs use
+the queue-aware supervisor. No trained laundry policy or hardware is evaluated.
 
-| Delay profile | Independent arrivals | Coherent bundles | Falls / episodes, each arm |
-| --- | ---: | ---: | ---: |
-| Zero | 0.726 (0.013) | 0.726 (0.013) | 0 / 8 |
-| Uniform 200 ms | 0.729 (0.032) | 0.729 (0.032) | 0 / 8 |
-| Asymmetric 200 ms + jitter | 2.024 (0.085) | 0.724 (0.017) | 0 / 8 |
-| Asymmetric 600 ms + jitter | 4.538 (0.051) | 0.959 (0.045) | 0 / 8 |
+## Evidence and Reproduction
 
-**Both methods succeed at reaching in all tested episodes.** The supported result is reduced posture disturbance under these asymmetric delays, not fall prevention or superior task completion. The zero/uniform conditions produce identical paired motion metrics, helping isolate inter-group mismatch. Coherent bundles have zero command-version skew by construction but still receive old information. The reaching trajectory is slower to begin than independent arrivals; first-reach time and dwell are recorded, not hidden.
+- [Stress run: configuration, every observation and event](laundry_task/output/laundry_cuda_delayed.json)
+- [Reference run](laundry_task/output/laundry_cuda_immediate.json)
+- [Full stress pose/velocity/control trace](laundry_task/output/laundry_cuda_delayed.npz)
+- [Full reference trace](laundry_task/output/laundry_cuda_immediate.npz)
+- [Validation results and artifact hashes](laundry_task/output/task_validation.json)
+- [Movie frame-to-simulation index](laundry_task/output/task_movie_frames.json)
+- [Methods, research connections and exact commands](laundry_task/README.md)
 
-For the 600 ms skew profile, mean first reach is 3.663 s with independent arrivals and 4.093 s with coherent bundles: about **0.43 s later** in exchange for less body tilt. These are small exploratory samples, not a proven optimum or hardware latency budget.
+The movie covers **all 665 recorded observations of the stress run**, slowed for
+inspection. Both final episodes retain full 25 Hz traces. Physics integrates at
+500 Hz; intermediate integration states are not all exported. Cross-device
+bitwise reproducibility is not promised for GPU reductions.
 
-[Episode results](output/episode_results.csv) and [full summary](output/episode_results.json) include matched input hashes, thresholds, timings and compute provenance. [Baseline probe](output/baseline_probe.json) preserves a negative finding: the alternative lower-gain MJX model fell under simple static targets. The selected original G1 description has stiff position gains (kp=500, dampratio=1); transferring its behavior to hardware is not justified.
-
-## What the Movie Shows
-
-Actual simulated poses, not interpolated cartoon joint paths, are rendered at 1920x1080 and 25 fps. The 12-second episode is slowed by 2.5x, with an introduction and result card. Amber points expose major link COMs through translucent meshes; teal is whole-body COM and its ground projection; magenta is a nominal reaching target.
-
-The synchronized plots show base tilt, command-version skew and right-hand target distance. The static projected foot-support margin in the CSV is a diagnostic only: it is not ZMP, capture point, or a proof of dynamic balance. Ground-contact force includes all floor contacts, not only feet.
-
-Command age is measured at the command dispatch tick, 20 ms before the corresponding end-of-step pose sample. Command-version skew is the difference between the newest and oldest applied group versions, multiplied by 20 ms. Both ages refer to setpoint messages, not sensor age or a direct measurement of motor response lag.
-
-Replay coverage is **2 full pose traces of 64 episodes**, one per arm for the preselected movie condition. Both full traces, frame-level CSVs and movie-to-simulation indices are retained. All 64 episodes can be deterministically regenerated; the tests exactly match the movie traces in the recorded environment. Cross-platform bitwise equality is not promised.
-
-## Reproduce
-
-From this experiment directory, use Python 3.11 and FFmpeg on PATH:
+From this repository root, with Python 3.11 and FFmpeg on PATH:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\python -m pip install -r requirements.txt
-.\.venv\Scripts\python fetch_model.py
-.\.venv\Scripts\python probe.py
-.\.venv\Scripts\python simulate.py
-.\.venv\Scripts\python -m unittest test_model -v
-.\.venv\Scripts\python render.py
-.\narrate.ps1 -Python .\.venv\Scripts\python.exe
+python -m venv .venv-gpu
+.\.venv-gpu\Scripts\python.exe -m pip install -r laundry_task/requirements-gpu.txt
+.\.venv-gpu\Scripts\python.exe fetch_model.py
+.\.venv-gpu\Scripts\python.exe -m laundry_task.run_physical --backend cuda --scenario delayed --name laundry_cuda_delayed
+.\.venv-gpu\Scripts\python.exe -m laundry_task.run_physical --backend cuda --scenario immediate --name laundry_cuda_immediate
+.\.venv-gpu\Scripts\python.exe -m unittest test_model laundry_task.test_supervisor laundry_task.test_physical -v
+.\.venv-gpu\Scripts\python.exe -m laundry_task.render_task
+.\laundry_task\narrate_task.ps1 -Python .\.venv-gpu\Scripts\python.exe
+.\.venv-gpu\Scripts\python.exe -m laundry_task.validate_task
 ```
 
-Windows narration uses installed System.Speech voices, without an API. On other platforms the captioned silent MP4 is generated by `render.py`; narration is optional. Run `simulate.py --pilot` only for development: it writes a separately labeled pilot summary but regenerates the same selected replay. Model assets are about 20 MB and are fetched from the pinned upstream source with hash checks.
+First-time CUDA kernel compilation takes several minutes. The CUDA path refuses
+CPU fallback. Narration uses local Windows System.Speech, without paid APIs;
+other platforms can produce the same captioned silent movie.
 
-## Scope and Next Steps
+## Limits and the Retained Failure
 
-The washer is a fixed collision box with visual details. No operable door, deformable clothing, grasping, contact-rich loading, button actuation, learned policy, sensor-delay estimator, torque-delay model, actuator thermal degradation or hardware test is included. This does not train an actuator or teach a humanoid to wash clothes. It tests one prerequisite: coordinated mass-bearing movement under internal setpoint-message delay.
+Grasps are proximity-gated compliant point constraints, not dexterous finger
+contact. The small 16-vertex washcloth has no self-collision or realistic garment
+bending model. The washer is top-loading; hinge limits/friction stand in for
+lid-housing contact. Transparent walls are a visual cutaway with collision walls
+still present. The body controller uses stiff position gains from the pinned
+model. There is no perception pipeline, learned policy, walking, washer-start
+button, washing cycle, hardware test or general recovery guarantee.
 
-Next tests should add a feedback whole-body balance controller with realistic gains, measured internal bus/actuator delays, packet loss and deadlines, payload variation, lower friction and disturbances. Eventually add articulated appliance parts, manipulation and actual learned policies. Do not infer safety merely from synchronized commands or COM projection.
+The [first CUDA calibration](laundry_task/output/calibration_cuda_retention.json)
+completed the movements but failed the strict final retention check: a cloth
+vertex drifted slightly beyond the conservative x=0.62 m acceptance boundary.
+It did not leave the physical washer. The old failure label says
+`cloth_escaped_after_release`, which overstates that geometric test. Source and
+trace are preserved at commit `615aa4d`. We moved the insertion target 4 cm farther
+from that boundary and **did not relax the acceptance region**. This is disclosed
+post-pilot calibration, not a preregistered repair claim.
 
-The private class RAG helped frame scheduling latency and fallback limitations via [SOTER](https://arxiv.org/abs/1808.07921) and [Sinha et al.'s system-level OOD perspective](https://arxiv.org/abs/2212.14020). Neither source certifies this controller; no private paper corpus or retrieved excerpts are published here.
+## Earlier Work
+
+The original 64-episode CPU standing/reaching study, its video and limitations
+remain available in [Historical Standing and Reaching](STANDING_REACHING.md).
+Its source and evidence are unchanged; it did not open the washer or load cloth.
+The [research integration note](laundry_task/README.md#where-the-earlier-research-goes)
+explains which queue-awareness ideas transfer and why earlier numerical results
+do not become evidence for this task. The private class PDF corpus is not included.
+
+Code is MIT licensed. The pinned upstream G1 assets are BSD-3-Clause; see
+[third-party notices](THIRD_PARTY_NOTICES.md). No external laundry videos or
+learned controller weights have been republished here.

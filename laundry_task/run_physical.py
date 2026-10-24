@@ -143,7 +143,7 @@ class Executor:
                 self.done = t-self.grab_time > 1.7
         elif skill == Skill.INSERT:
             above = np.array([.43, .015, 1.09])
-            inside = np.array([.43, .015, .80])
+            inside = np.array([.39, .015, .80])
             left = (smooth(self.start_hands[0], above, elapsed/2.) if elapsed < 2.
                     else smooth(above, inside, (elapsed-2.)/2.))
             self.done = elapsed > 4.8
@@ -276,7 +276,7 @@ def run(backend, scenario, name, duration=40.):
             if complete_at is None:
                 complete_at = t
             if not o.cloth_inside:
-                failures.append({"time_s": t, "reason": "cloth_escaped_after_release"})
+                failures.append({"time_s": t, "reason": "cloth_outside_retention_region"})
             if t-complete_at >= 3.:
                 break
         if ex.current is not None and t-ex.stage_time > 12:

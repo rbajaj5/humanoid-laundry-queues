@@ -1,6 +1,55 @@
 # Humanoid Queue Experiment Checkpoint
 
-## Current Direction: Task-Level Queue Awareness (2026-10-24)
+## Current: Physical CUDA Task Completed (2026-10-24)
+
+The top-loading washer and deformable washcloth task now works in the calibrated
+simulation. Actual G1 joint actuators open the passive lid through an idealized
+grasp, lift and insert the washcloth, release it and retract. No pelvis weld,
+lid actuator, scripted object motion or low-level joint-delay injection is used.
+
+Final CUDA delayed and timely-observation reference episodes each completed five
+skills at 23.56 s, followed by 3 s retention. Each trace contains 665 observations
+at 25 Hz; physics integrates at 500 Hz on the RTX 5070 Ti Laptop GPU. Stress:
+270 duplicate attempts blocked, 30 repeated/stale observation updates rejected,
+five unique physical skill starts. This is not a policy-superiority comparison.
+
+The first CUDA pilot failed the conservative cloth acceptance region; its trace
+and source are preserved at commit 615aa4d. The insertion x target moved 0.43 to
+0.39 m, with unchanged acceptance bounds. Do not erase that calibration history.
+
+All 32 tests pass (10 historical, 16 protocol, 6 new physical/replay tests).
+The 66 s narrated, captioned MP4 is 1920x1080 at 25 fps; all 1,650 frames decode,
+audio timing passes, and every stored stress observation is represented. Encoded
+opening, insertion and final retention frames were inspected. The video shows
+CUDA states; rendering reports Intel Graphics and encoding is CPU libx264.
+
+Output: `laundry_task/output/humanoid_laundry_task_narrated.mp4`.
+Release: `laundry-task-2026-10-24` in rbajaj5/humanoid-laundry-queues.
+Front-page README emphasizes this one movie. The old README is preserved as
+STANDING_REACHING.md; v1 source, results and media remain unchanged.
+
+Exact local resume commands, from this repository root:
+
+```powershell
+..\.venv-laundry-gpu\Scripts\python.exe -m unittest test_model laundry_task.test_supervisor laundry_task.test_physical -v
+..\.venv-laundry-gpu\Scripts\python.exe -m laundry_task.validate_task
+# Recompute only intentionally; do not overwrite retained results casually:
+..\.venv-laundry-gpu\Scripts\python.exe -m laundry_task.run_physical --backend cuda --scenario delayed --name laundry_cuda_delayed
+..\.venv-laundry-gpu\Scripts\python.exe -m laundry_task.run_physical --backend cuda --scenario immediate --name laundry_cuda_immediate
+..\.venv-laundry-gpu\Scripts\python.exe -m laundry_task.render_task
+.\laundry_task\narrate_task.ps1 -Python ..\.venv-laundry-gpu\Scripts\python.exe
+```
+
+Limitations: hand-authored IK/ankle feedback, stiff model gains, idealized point
+grasps, small 16-vertex cloth without self-contact, oracle physical observations,
+one calibrated setup, no durable ledger, no hardware or trained-policy validation.
+Remaining work: learned skill integration, realistic grasping/cloth, physical
+uncertainty, retry backoff and frozen multi-seed policy comparisons.
+
+Gardening is a **separate repository**, not a new laundry subfolder:
+https://github.com/rbajaj5/humanoid-gardening-queues . Do not mix their results.
+
+## Historical Pre-Physical Checkpoint (2026-10-24)
 
 Latest user direction supersedes the original emphasis below: assume a capable
 humanoid within a stated envelope; use the queue-aware research to coordinate

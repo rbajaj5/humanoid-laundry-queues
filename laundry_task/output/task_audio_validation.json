@@ -1,0 +1,50 @@
+[
+  {
+    "start": 0,
+    "end": 7,
+    "text": "One humanoid, one washer, one washcloth. These are recorded CUDA physics states, not a generated animation.",
+    "raw_duration_s": 9.047982,
+    "tempo": 1.3504450746268655,
+    "fitted_duration_s": 6.7
+  },
+  {
+    "start": 7,
+    "end": 19,
+    "text": "Opening is underway when its acknowledgement is withheld. Retries keep the same command identity, so the receiver does not open twice. Old observations are rejected.",
+    "raw_duration_s": 11.822313,
+    "tempo": 1.0104541025641025,
+    "fitted_duration_s": 11.7
+  },
+  {
+    "start": 19,
+    "end": 31,
+    "text": "Fresh observations confirm the lid is open. The next skill can queue, but the local executor finishes the current movement before accepting the next one.",
+    "raw_duration_s": 9.902494,
+    "tempo": 1.0,
+    "fitted_duration_s": 9.902494
+  },
+  {
+    "start": 31,
+    "end": 43,
+    "text": "The left hand lifts a deformable washcloth and lowers it into the cavity. Grasping uses an idealized contact constraint, not dexterous fingers.",
+    "raw_duration_s": 10.072517,
+    "tempo": 1.0,
+    "fitted_duration_s": 10.072517
+  },
+  {
+    "start": 43,
+    "end": 55,
+    "text": "Release requires the cloth to be inside. The hand retracts, and the cloth stays in the washer. Completion comes from physical observations, not a receipt.",
+    "raw_duration_s": 11.61229,
+    "tempo": 1.0,
+    "fitted_duration_s": 11.61229
+  },
+  {
+    "start": 55,
+    "end": 66,
+    "text": "Both the stress episode and a timely observation reference completed on the GPU. This is one calibrated setup with hand authored skills, not hardware validation or a general safety guarantee.",
+    "raw_duration_s": 12.747075,
+    "tempo": 1.191315420560748,
+    "fitted_duration_s": 10.699999999999998
+  }
+]

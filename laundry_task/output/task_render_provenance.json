@@ -1,0 +1,12 @@
+{
+  "physics": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "renderer": "Intel(R) Graphics",
+  "graphics_vendor": "Intel",
+  "fps": 25,
+  "duration_s": 66,
+  "trace": "laundry_cuda_delayed.npz",
+  "trace_sha256": "1bb9d1b81074419187d81cc0b042ca3af5eee07e54dec04d8d7a0abe0f78b4a6",
+  "source_sha256": "75d732956b85324177ddf002166659a2b6d6e4671ce316440a7d2fa94e8fcb75",
+  "interpolation": "none: each frame selects one retained 25 Hz physics observation",
+  "coverage": "all 665 retained observations of the delayed episode; reference summarized only"
+}

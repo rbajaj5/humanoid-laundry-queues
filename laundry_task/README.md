@@ -3,8 +3,9 @@
 Current development direction: **a capable humanoid doing a useful task, with
 queue-aware supervision above its body controller**. The published joint-delay
 experiment remains historical evidence; additional internal-delay videos are not
-the objective. This directory currently implements a tested task protocol and a
-CUDA standing probe, not a complete physical laundry task.
+the objective. This directory now implements the tested protocol, a CUDA standing
+probe, and a physical top-loading washer/cloth demonstration. The current movie
+and result table are on the [front page](../README.md).
 
 ## Where the Earlier Research Goes
 
@@ -16,7 +17,7 @@ The research is linked, not copied wholesale or pooled into a new result.
 | [Queue and coordination experiments](https://github.com/rbajaj5/delay-aware-runtime-assurance-lab/tree/main/analysis) | Separate issued, received, executing and physically completed actions. Preserve identity on retry; recheck state when consuming queued commands. | Their performance counts do not become humanoid results. |
 | [Fair-queue experiments](https://github.com/rbajaj5/delay-aware-runtime-assurance-lab/blob/main/analysis/run_fair_queue_multiagent_simulation.py) | Future concurrent perception/planning: measure stale work and starvation, not just throughput. | Not yet implemented here; priority alone is not an assurance mechanism. |
 | [RAG](https://github.com/rbajaj5/assured-autonomy-rag) | Retrieve mechanism-level literature and retain source provenance for design decisions. | Retrieval is neither a controller nor validation evidence. The class PDF corpus stays private. |
-| [Historical humanoid probe](../README.md#question-and-mechanism) | Retain the mass/inertia model and reproducibility lessons. | No new emphasis on arbitrary joint delays; no claim the earlier reach opens a washer. |
+| [Historical humanoid probe](../STANDING_REACHING.md#question-and-mechanism) | Retain the mass/inertia model and reproducibility lessons. | No new emphasis on arbitrary joint delays; no claim the earlier reach opens a washer. |
 
 The final course evidence distinguishes a quarantined v2 conversion bug,
 registered N=3/N=4 comparison, exploratory deeper-horizon results, and a separate
@@ -78,8 +79,8 @@ These are explicit synthetic protocol settings, not calibrated hardware limits.
 The ledger is in memory: receiver crashes, distributed ownership, durable
 recovery, authentication, perception errors and adversarial messages are outside
 this implementation. Do not call it exactly-once physical execution or a formal
-safety certificate. The simple Boolean cloth predicate still needs a physical
-measurement adapter and persistence/dwell checks.
+safety certificate. The physical adapter below computes cloth predicates from
+all simulated vertices and requires three seconds of final retention.
 
 ## Reproduce
 
@@ -111,16 +112,79 @@ GPU floating-point reductions need not reproduce a bit-identical final-state
 hash; the recorded CPU comparison uses an explicit numerical tolerance. The four
 worlds share initial conditions and controls and are not four independent trials.
 
-## Next Physical Experiment
+## Physical Task Implementation
 
-Connect the protocol to an articulated, hollow washer, a grasp-capable hand and a
-deformable cloth model. Test physical door opening, pickup, insertion, release and
-retention, with task aborts/failures logged. Compare immediate, delayed and missing
-task receipts on matched observation/command tapes while holding the body
-controller fixed. Also report completion time, indefinite holds and false holds;
-blocked progress is not a successful task.
+`physical.py` extends the pinned G1 description with a hollow top-loading washer,
+a passive 0.27 kg lid, a side table and a 4-by-4 deformable washcloth. No lid or
+cloth coordinate is scripted during integration. The only actuators are the 29
+original humanoid position servos. Whole-body IK supplies nominal joint targets;
+small pitch/roll/COM feedback adjusts ankle targets through those actuators.
+The free base receives no artificial stabilizing force or weld.
 
-Do not render or publish a new task-success movie until the objects actually move
-through simulated interaction and the retained physical state verifies the task.
-One useful demonstration should replace the front-page emphasis, rather than
-adding a gallery of nearly identical laundry clips.
+Two compliant point constraints idealize gripping. They are enabled only when
+the designated hand is within 25 mm of the handle or cloth corner. Cloth grasp
+verification also requires the measured point gap below 35 mm. Hand-object
+collisions are excluded for the idealized grasp; lid-housing collisions are
+excluded because hinge limits and friction represent that closure mechanism.
+The cloth has edge constraints, contact and gravity, but no self-collision or
+calibrated bending law. This is not a dexterous-grasp or fabric benchmark.
+
+`run_physical.py` integrates at 2 ms on CUDA, with 40 ms control and observation
+ticks. CPU kinematic readback computes actual lid angle, all cloth vertex bounds,
+hand clearance, base height and tilt. The body-ready envelope is 0.65-0.90 m base
+height and tilt below 15 degrees; violation terminates the run as a failure. This
+is an empirical envelope check, not a verified recovery controller.
+
+Physical task settings override protocol defaults: command TTL 10 s and lid-open
+threshold 1.10 rad. The freshness limit remains 0.25 s. Both final runs have 0.12 s
+command delivery; the reference has immediate observations and 0.04 s receipts.
+The stress run has 0.12 s observation delay, no new observations during [4,5.2) s,
+2.5 s receipts and a completely withheld opening receipt. Observations are oracle
+simulation state with delayed delivery, not noisy camera measurements.
+
+The coordinator may verify a skill's physical postcondition before the executor
+finishes its return movement. A following command can then wait in transport,
+but the receiver's active-skill guard prevents overlapping execution. The movie
+therefore distinguishes verified postconditions from the currently executing
+movement. A `TASK_COMPLETE` protocol event alone is insufficient: the experiment
+waits for executor completion and three further seconds of retention.
+
+The acceptance region is x in (0.28,0.62), y in (-0.19,0.19), z in (0.488,0.835)
+metres. Every cloth vertex must be inside at each retained observation. Hands
+must be outside the opening or above it, and the cloth constraint must be off.
+One second of initial settling is outside the reported episode clock.
+
+## Reproduce the Movie
+
+After the environment/model commands above, from the repository root:
+
+```powershell
+.\.venv-gpu\Scripts\python.exe -m laundry_task.run_physical --backend cuda --scenario delayed --name laundry_cuda_delayed
+.\.venv-gpu\Scripts\python.exe -m laundry_task.run_physical --backend cuda --scenario immediate --name laundry_cuda_immediate
+.\.venv-gpu\Scripts\python.exe -m unittest test_model laundry_task.test_supervisor laundry_task.test_physical -v
+.\.venv-gpu\Scripts\python.exe -m laundry_task.render_task
+.\laundry_task\narrate_task.ps1 -Python .\.venv-gpu\Scripts\python.exe
+.\.venv-gpu\Scripts\python.exe -m laundry_task.validate_task
+```
+
+The final runs share the same frozen model/controller after disclosed pilot
+calibration. They are not a matched policy comparison or a randomized sample.
+Both finish at 23.56 s, and all 665 observations per run are retained. The movie
+shows only the stress trace, plus an explicitly labeled reference summary. Each
+rendered frame selects a stored observation with no interpolated dynamics.
+Model/source/trace/video hashes and narration timing are retained alongside it.
+
+The first GPU pilot is preserved in `output/calibration_cuda_retention.*` and
+commit `615aa4d`. Its x-boundary failure was corrected by changing the insertion
+target from 0.43 m to 0.39 m, not by weakening the retention criterion. CPU
+development pilots guided grasp geometry, collision masks and ankle feedback;
+they are not independent confirmation or statistical evidence.
+
+## Remaining Work
+
+Integrate and validate a learned body/skill policy, realistic fingers and cloth,
+vision-based observations, tool/task variations and durable recovery. Compare
+queue-aware and non-idempotent/receipt-only baselines under a frozen multi-seed
+protocol before claiming a measured advantage. Add retry backoff: the current
+tick-level retries deliberately exercise deduplication, but waste messages.
+Do not infer hardware safety or general reliability from two successful runs.
