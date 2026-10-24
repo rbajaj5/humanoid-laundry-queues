@@ -1,0 +1,47 @@
+{
+  "created_utc": "2026-10-24T17:37:43.573776+00:00",
+  "purpose": "CUDA forward-dynamics compatibility and standing probe, not laundry success",
+  "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "array_device": "cuda:0",
+  "gpu_physics": true,
+  "packages": {
+    "mujoco": "3.17.0",
+    "mujoco-warp": "3.17.0",
+    "warp-lang": "1.17.0",
+    "numpy": "2.4.6"
+  },
+  "worlds": 4,
+  "worlds_identical": true,
+  "steps_per_world": 500,
+  "physics_dt_s": 0.002,
+  "humanoid_mass_kg": 33.341142000000005,
+  "actuated_joints": 29,
+  "simulated_seconds_per_world": [
+    0.9999942183494568,
+    0.9999942183494568,
+    0.9999942183494568,
+    0.9999942183494568
+  ],
+  "physics_wall_seconds_excluding_compilation": 0.38263419999566395,
+  "initial_qpos_sha256": "0905f435fabfdeb5d5ffd825a87e5a0f625f98ffd0419a4c76faf84e18d1d0d7",
+  "final_qpos_sha256": "8d5344574496a3b359976322ade84c420819b13d70d8ee734a094752858dbfde",
+  "source_sha256": {
+    "laundry_task/gpu_probe.py": "d16151b5740f1245881f7ccaaaced5345077a81007c102d3c79b7b18fe5a7048",
+    "simulate.py": "23b77a2f7c4b1a7630a8f732489297eb665a92a27bb57f3ee775c48951d3a06b",
+    "config.json": "33742a2c9360a69a29d568a2f04c2261795d8414255e9b59d2add9c545203ce3",
+    "output/model_manifest.json": "04ac7c568150bdb6f30f916a32cf5dfd9c0983005f1679fd3aa6a771e8f8985d"
+  },
+  "cpu_reference_maximum_qpos_absolute_difference": 7.389873987403316e-07,
+  "cpu_reference_tolerance": 0.001,
+  "cpu_reference_note": "Same initial state and standing target; qpos includes metres, quaternion components and radians. Agreement is a compatibility check, not hardware validation.",
+  "minimum_sampled_base_height_m": 0.791614830493927,
+  "maximum_sampled_base_tilt_deg": 0.07401873916387558,
+  "sampling_note": "diagnostics sampled every 100 steps plus final; not continuous guarantees",
+  "passed": true,
+  "limits": [
+    "Fixed standing target only",
+    "Not independent reliability trials",
+    "No cloth, grasp, door operation or pretrained policy",
+    "Old published v1 experiment remains CPU physics"
+  ]
+}

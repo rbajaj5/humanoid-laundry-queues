@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import importlib.metadata
 import json
@@ -63,6 +64,10 @@ def main():
         samples.append(final)
         simulation_times = d.time.numpy()
     poses = np.asarray(samples)
+    reference = reset(model)
+    for _ in range(args.steps):
+        mujoco.mj_step(model, reference)
+    cpu_error = float(np.max(np.abs(final - reference.qpos)))
     height = poses[:, :, 2]
     # Rotation of body z axis relative to world z from free-joint quaternion.
     quat = poses[:, :, 3:7]
@@ -71,17 +76,28 @@ def main():
                   np.max(tilt) < 45 and
                   np.allclose(simulation_times, args.steps * model.opt.timestep, atol=1e-4) and
                   np.max(np.abs(final - initial)) > 1e-6)
+    passed = passed and cpu_error < .001
     report = {
+        "created_utc": datetime.now(timezone.utc).isoformat(),
         "purpose": "CUDA forward-dynamics compatibility and standing probe, not laundry success",
         "device": device.name, "array_device": str(d.qpos.device), "gpu_physics": True,
         "packages": {p: importlib.metadata.version(p) for p in
                      ["mujoco", "mujoco-warp", "warp-lang", "numpy"]},
         "worlds": args.worlds, "worlds_identical": True,
         "steps_per_world": args.steps, "physics_dt_s": model.opt.timestep,
+        "humanoid_mass_kg": float(model.body_subtreemass[1]),
+        "actuated_joints": model.nu,
         "simulated_seconds_per_world": simulation_times.tolist(),
         "physics_wall_seconds_excluding_compilation": elapsed,
         "initial_qpos_sha256": hashlib.sha256(initial.tobytes()).hexdigest(),
         "final_qpos_sha256": hashlib.sha256(final.tobytes()).hexdigest(),
+        "source_sha256": {
+            name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+            for name in ("laundry_task/gpu_probe.py", "simulate.py", "config.json",
+                         "output/model_manifest.json")},
+        "cpu_reference_maximum_qpos_absolute_difference": cpu_error,
+        "cpu_reference_tolerance": .001,
+        "cpu_reference_note": "Same initial state and standing target; qpos includes metres, quaternion components and radians. Agreement is a compatibility check, not hardware validation.",
         "minimum_sampled_base_height_m": float(height.min()),
         "maximum_sampled_base_tilt_deg": float(tilt.max()),
         "sampling_note": "diagnostics sampled every 100 steps plus final; not continuous guarantees",

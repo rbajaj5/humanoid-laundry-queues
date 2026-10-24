@@ -25,8 +25,11 @@ An isolated sibling `.venv-laundry-gpu` now contains MuJoCo/MuJoCo Warp 3.17.0,
 Warp 1.17.0, NumPy 2.4.6 and SciPy 1.17.1. Warp 1.18's default CUDA 13 build did
 not support driver 577.13; the CUDA 12.9 build in Warp 1.17 detects the RTX 5070
 Ti Laptop GPU. No system driver was changed. CUDA forward-dynamics verification
-is performed by `laundry_task/gpu_probe.py`; read its generated report before
-claiming a successful run. GPU detection alone is not evidence of GPU physics.
+passes via `laundry_task/gpu_probe.py`: four identical G1 standing worlds, 500
+physics steps per world, 2 ms timestep, one simulated second. The generated
+`laundry_task/output/gpu_probe.json` records numerical/posture checks, a CPU
+reference comparison, device, versions and source hashes. This verifies actual
+CUDA stepping, not general body reliability or laundry-task success.
 
 Resume from this repository root:
 

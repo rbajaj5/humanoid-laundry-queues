@@ -104,6 +104,13 @@ laundry-task success or statistical robot reliability. This is separate from the
 published v1 CPU-only experiment. Its default Warp pin uses CUDA 12.9, avoiding
 the incompatible CUDA 13 default build on the development machine's driver.
 
+[Recorded CUDA probe](output/gpu_probe.json) identifies the actual device,
+numerical checks and source hashes. [Protocol test report](output/protocol_validation.json)
+records the 16 passing protocol tests. The 10 historical tests remain separate.
+GPU floating-point reductions need not reproduce a bit-identical final-state
+hash; the recorded CPU comparison uses an explicit numerical tolerance. The four
+worlds share initial conditions and controls and are not four independent trials.
+
 ## Next Physical Experiment
 
 Connect the protocol to an articulated, hollow washer, a grasp-capable hand and a
