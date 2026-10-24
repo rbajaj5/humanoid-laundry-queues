@@ -13,3 +13,4 @@ output/preview_*.jpg
 output/encoded_*.jpg
 output/pilot_results.*
 __pycache__/
+.warp-cache/

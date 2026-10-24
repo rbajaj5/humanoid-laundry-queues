@@ -1,6 +1,10 @@
 # Humanoid Laundry Queues
 
-A standalone simulation-only research repository for mass-bearing humanoid movement under internal command delays. It does not modify or replace the separate Assured Autonomy or RAG repositories.
+A standalone simulation-only research repository for queue-aware humanoid task coordination. It does not modify or replace the separate Assured Autonomy or RAG repositories.
+
+**Current direction:** condition on a capable low-level humanoid controller and study task coordination: opening, grasping, insertion, release and verified completion. Queue awareness belongs in pending skills, stale observations and missing acknowledgements; internal joint delay is no longer the main research target. [Research integration, public controller candidates and tested task protocol](laundry_task/README.md). Actual door/cloth interaction remains to be implemented. No new task-success movie is claimed.
+
+## Historical Standing and Reaching Demonstration
 
 **An articulated rigid-body experiment, not a kinematic stick figure.** A free-base Unitree G1 reaches toward a fixed washing-machine proxy. Link masses, centers of mass, inertias, gravity, joint torque limits and foot contact are evaluated by MuJoCo. No force, weld, or script holds the pelvis in place during the experiment.
 

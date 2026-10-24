@@ -1,0 +1,13 @@
+{
+  "scope": "Pure-Python task protocol tests with synthetic observations; not physical laundry results",
+  "tests_run": 16,
+  "failures": 0,
+  "errors": 0,
+  "passed": true,
+  "source_sha256": {
+    "supervisor.py": "22699d051b7f38dd51cd1a00e19102eabe1b6d9d4666887b275c8313a2dc87b0",
+    "test_supervisor.py": "9cec0ee564816eb1d62cc43c9f49f09b2db33eab80c456ee4fd7685a6a026162",
+    "validate_protocol.py": "1121d4df425f1f8580ac20aec797dac3843b26a68e3816d8d923b3af756e28d6"
+  },
+  "test_output": "test_active_skill_blocks_conflicting_command (laundry_task.test_supervisor.ProtocolTests.test_active_skill_blocks_conflicting_command) ... ok\ntest_complete_ordered_task_without_any_receipts (laundry_task.test_supervisor.ProtocolTests.test_complete_ordered_task_without_any_receipts) ... ok\ntest_completion_evidence_must_follow_execution_start (laundry_task.test_supervisor.ProtocolTests.test_completion_evidence_must_follow_execution_start) ... ok\ntest_dequeue_checks_current_state (laundry_task.test_supervisor.ProtocolTests.test_dequeue_checks_current_state) ... ok\ntest_expiry_does_not_cancel_execution (laundry_task.test_supervisor.ProtocolTests.test_expiry_does_not_cancel_execution) ... ok\ntest_invalid_thresholds (laundry_task.test_supervisor.ProtocolTests.test_invalid_thresholds) ... ok\ntest_missing_receipt_retries_same_identity (laundry_task.test_supervisor.ProtocolTests.test_missing_receipt_retries_same_identity) ... ok\ntest_no_retransmission_before_timeout (laundry_task.test_supervisor.ProtocolTests.test_no_retransmission_before_timeout) ... ok\ntest_observation_order (laundry_task.test_supervisor.ProtocolTests.test_observation_order) ... ok\ntest_old_receipt_cannot_clear_next_command (laundry_task.test_supervisor.ProtocolTests.test_old_receipt_cannot_clear_next_command) ... ok\ntest_old_session_rejected (laundry_task.test_supervisor.ProtocolTests.test_old_session_rejected) ... ok\ntest_receipt_is_not_task_completion (laundry_task.test_supervisor.ProtocolTests.test_receipt_is_not_task_completion) ... ok\ntest_receiver_deduplicates (laundry_task.test_supervisor.ProtocolTests.test_receiver_deduplicates) ... ok\ntest_reject_old_future_and_nan_observations (laundry_task.test_supervisor.ProtocolTests.test_reject_old_future_and_nan_observations) ... ok\ntest_release_requires_cloth_inside (laundry_task.test_supervisor.ProtocolTests.test_release_requires_cloth_inside) ... ok\ntest_unreliable_body_holds (laundry_task.test_supervisor.ProtocolTests.test_unreliable_body_holds) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 0.001s\n\nOK\n"
+}

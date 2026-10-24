@@ -1,0 +1,6 @@
+# Warp 1.17 PyPI wheels use CUDA 12.9, compatible with this machine's driver.
+mujoco==3.17.0
+mujoco-warp==3.17.0
+warp-lang==1.17.0
+numpy==2.4.6
+scipy==1.17.1
