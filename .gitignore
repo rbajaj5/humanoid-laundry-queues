@@ -14,3 +14,8 @@ output/encoded_*.jpg
 output/pilot_results.*
 __pycache__/
 .warp-cache/
+laundry_task/output/pilot_*
+laundry_task/output/preview.jpg
+laundry_task/output/*.mp4
+laundry_task/output/*.wav
+laundry_task/output/frames/
