@@ -1,0 +1,32 @@
+[
+  {
+    "start": 0,
+    "text": "This humanoid has twenty nine joints, a free base, and per link masses and inertias.",
+    "end": 6
+  },
+  {
+    "start": 6,
+    "text": "Both robots receive the same reaching commands and synthetic delays. The simulation includes gravity, floor contact, joint torque limits, and body inertia.",
+    "end": 15
+  },
+  {
+    "start": 15,
+    "text": "On the left, joint groups apply commands as they arrive. Delayed leg updates can leave the arms and legs working on different command versions.",
+    "end": 24
+  },
+  {
+    "start": 24,
+    "text": "On the right, the supervisor waits for a complete whole body command. This preserves coordination, but makes the robot wait for the slowest group.",
+    "end": 33
+  },
+  {
+    "start": 33,
+    "text": "Across eight matched seeds, synchronization reduced peak body tilt. Both robots stayed upright and reached the target.",
+    "end": 40
+  },
+  {
+    "start": 40,
+    "text": "This is an exploratory standing and reaching test, not a trained laundry robot. Clothing, door manipulation, and hardware validation still remain.",
+    "end": 48
+  }
+]

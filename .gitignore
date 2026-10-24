@@ -1,0 +1,15 @@
+models/
+.venv/
+.env
+.env.*
+output/*.mp4
+output/*.npz
+!output/replay_independent.npz
+!output/replay_coherent.npz
+output/*.wav
+output/frames/
+output/preview_*.jpg
+!output/preview_0470.jpg
+output/encoded_*.jpg
+output/pilot_results.*
+__pycache__/

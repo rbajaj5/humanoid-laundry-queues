@@ -1,0 +1,23 @@
+{
+  "label": "Exploratory G1 standing-reach actuator-queue benchmark; not trained laundry manipulation",
+  "physics_engine": "MuJoCo CPU",
+  "model": "unitree_g1/g1.xml",
+  "physics_dt_s": 0.002,
+  "control_dt_s": 0.02,
+  "duration_s": 12.0,
+  "settle_s": 1.0,
+  "setpoint_lag_s": 0.02,
+  "seeds": [24100, 24101, 24102, 24103, 24104, 24105, 24106, 24107],
+  "profiles": ["zero", "uniform_200ms", "skew_200ms", "skew_600ms"],
+  "arms": ["independent", "coherent"],
+  "command_noise_sd_rad": 0.0005,
+  "torso_force_sd_N": 0.3,
+  "fall_height_m": 0.55,
+  "fall_tilt_deg": 45.0,
+  "reach_tolerance_m": 0.08,
+  "reach_window_s": [4.0, 7.0],
+  "reach_duration_required_s": 0.4,
+  "support_margin_warning_m": 0.0,
+  "movie_seed": 24100,
+  "movie_profile": "skew_600ms"
+}

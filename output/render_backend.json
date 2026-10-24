@@ -1,0 +1,6 @@
+{
+  "renderer": "Intel(R) Graphics",
+  "vendor": "Intel",
+  "physics": "MuJoCo CPU",
+  "encoding": "libx264 CPU"
+}

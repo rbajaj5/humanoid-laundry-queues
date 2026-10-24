@@ -1,0 +1,31 @@
+{
+  "tests_passed": true,
+  "test_output": "test_independent_exposes_skew (test_model.MechanismTests.test_independent_exposes_skew) ... ok\ntest_no_delay_equivalence (test_model.MechanismTests.test_no_delay_equivalence) ... ok\ntest_obsolete_packets_do_not_reverse_time (test_model.MechanismTests.test_obsolete_packets_do_not_reverse_time) ... ok\ntest_waits_for_all_groups (test_model.MechanismTests.test_waits_for_all_groups) ... ok\ntest_matched_inputs_and_repeatable_noise (test_model.PhysicsTests.test_matched_inputs_and_repeatable_noise) ... ok\ntest_model_hashes (test_model.PhysicsTests.test_model_hashes) ... ok\ntest_nominal_path_within_joint_limits (test_model.PhysicsTests.test_nominal_path_within_joint_limits) ... ok\ntest_real_mass_inertia_and_free_base (test_model.PhysicsTests.test_real_mass_inertia_and_free_base) ... ok\ntest_retained_replay (test_model.PhysicsTests.test_retained_replay) ... ok\ntest_saved_pairing_and_aggregates (test_model.PhysicsTests.test_saved_pairing_and_aggregates) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 2.777s\n\nOK\n",
+  "full_movie_decode_passed": true,
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "r_frame_rate": "25/1",
+    "nb_frames": "1200",
+    "codec_name": "h264"
+  },
+  "audio_codec": "aac",
+  "duration_s": 48.0,
+  "movie_sha256": "9430d59b27239d4022ee86dfb48d7dc46e179e15df9499371c861b529ef58327",
+  "movie_bytes": 3198609,
+  "render_backend": {
+    "renderer": "Intel(R) Graphics",
+    "vendor": "Intel",
+    "physics": "MuJoCo CPU",
+    "encoding": "libx264 CPU"
+  },
+  "replay_coverage": {
+    "retained_full_poses": 2,
+    "total_episodes": 64,
+    "seed": 24100,
+    "profile": "skew_600ms"
+  },
+  "episode_count": 64,
+  "matched_pairs": 32,
+  "scope": "exploratory simulation only"
+}
